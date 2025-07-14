@@ -1,0 +1,303 @@
+/* ===== MOBILE RESPONSIVE STYLES ===== */
+
+/* Base Mobile Styles */
+@media (max-width: 768px) {
+  /* Typography */
+  body {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+
+  h1 {
+    font-size: 2rem !important;
+  }
+  h2 {
+    font-size: 1.75rem !important;
+  }
+  h3 {
+    font-size: 1.5rem !important;
+  }
+  h4 {
+    font-size: 1.25rem !important;
+  }
+
+  /* Container and Layout */
+  .container {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+
+  /* Navigation */
+  .navbar {
+    padding: 0.5rem 1rem !important;
+  }
+
+  .nav-links {
+    width: 100% !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border-radius: 10px !important;
+    margin-top: 10px !important;
+    padding: 20px !important;
+  }
+
+  .nav-links ul {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+
+  .nav-links li a {
+    font-size: 18px !important;
+    padding: 10px 15px !important;
+    display: block !important;
+    text-align: center !important;
+  }
+
+  /* Hero Section */
+  .home-img {
+    height: 60vh !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+
+  .home-img h1 {
+    font-size: 3rem !important;
+    padding: 2rem 1rem !important;
+    text-align: center !important;
+  }
+
+  /* Cards and Content */
+  .card {
+    margin-bottom: 20px !important;
+    border-radius: 15px !important;
+  }
+
+  .card-body {
+    padding: 1.5rem !important;
+  }
+
+  /* Forms */
+  .form-control {
+    font-size: 16px !important;
+    padding: 12px 15px !important;
+    border-radius: 10px !important;
+  }
+
+  .btn {
+    font-size: 16px !important;
+    padding: 12px 20px !important;
+    border-radius: 10px !important;
+    width: 100% !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Tables */
+  .table-responsive {
+    border-radius: 10px !important;
+    overflow-x: auto !important;
+  }
+
+  .table {
+    font-size: 14px !important;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 10px !important;
+  }
+
+  /* Profile Images */
+  .profile-img,
+  .engineer-img {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+  }
+
+  /* Modals */
+  .modal-dialog {
+    margin: 10px !important;
+    max-width: calc(100% - 20px) !important;
+  }
+
+  .modal-content {
+    border-radius: 15px !important;
+  }
+
+  /* Gallery */
+  .gallery-item {
+    margin-bottom: 15px !important;
+  }
+
+  .gallery-item img {
+    height: 200px !important;
+    border-radius: 10px !important;
+  }
+
+  /* Engineer Cards */
+  .engineer-card {
+    margin-bottom: 20px !important;
+    padding: 15px !important;
+    border-radius: 15px !important;
+  }
+
+  /* Package Cards */
+  .package-card {
+    margin-bottom: 20px !important;
+    padding: 15px !important;
+  }
+
+  /* Booking Forms */
+  .booking-form {
+    padding: 20px !important;
+    border-radius: 15px !important;
+  }
+
+  /* Footer */
+  footer {
+    padding: 30px 15px !important;
+  }
+
+  footer .row > div {
+    margin-bottom: 30px !important;
+  }
+
+  /* Utility Classes */
+  .text-center-mobile {
+    text-align: center !important;
+  }
+
+  .mb-mobile {
+    margin-bottom: 20px !important;
+  }
+
+  .p-mobile {
+    padding: 15px !important;
+  }
+
+  /* Hide on Mobile */
+  .hide-mobile {
+    display: none !important;
+  }
+
+  /* Show only on Mobile */
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 576px) {
+  .home-img h1 {
+    font-size: 2.5rem !important;
+  }
+
+  .container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .card-body {
+    padding: 1rem !important;
+  }
+
+  .btn {
+    font-size: 14px !important;
+    padding: 10px 15px !important;
+  }
+
+  .table {
+    font-size: 12px !important;
+  }
+
+  .modal-dialog {
+    margin: 5px !important;
+    max-width: calc(100% - 10px) !important;
+  }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .home-img {
+    height: 80vh !important;
+  }
+
+  .home-img h1 {
+    font-size: 2.5rem !important;
+  }
+}
+
+/* Touch Improvements */
+@media (hover: none) and (pointer: coarse) {
+  .btn,
+  .nav-links a,
+  .card {
+    transition: none !important;
+  }
+
+  .btn:active {
+    transform: scale(0.98) !important;
+  }
+
+  /* Larger touch targets */
+  .nav-links a,
+  .btn,
+  .form-control {
+    min-height: 44px !important;
+  }
+}
+
+/* Dark Mode Mobile Adjustments */
+@media (max-width: 768px) {
+  body.dark-mode .nav-links {
+    background: rgba(0, 0, 0, 0.95) !important;
+    border: 1px solid #333 !important;
+  }
+
+  body.dark-mode .card {
+    background: #1a1a1a !important;
+    border: 1px solid #333 !important;
+  }
+
+  body.dark-mode .form-control {
+    background: #2a2a2a !important;
+    border: 1px solid #444 !important;
+    color: #fff !important;
+  }
+
+  body.dark-mode .btn-primary {
+    background: #fd226a !important;
+    border-color: #fd226a !important;
+  }
+}
+
+/* Fix for specific elements that might overflow */
+* {
+  box-sizing: border-box !important;
+}
+
+html,
+body {
+  overflow-x: hidden !important;
+}
+
+/* Prevent zoom on input focus (iOS) */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
