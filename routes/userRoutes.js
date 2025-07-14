@@ -11,10 +11,6 @@ const fs = require("fs");
 const fsPromises = require("fs").promises;
 const path = require("path");
 
-// Import new system components
-const logger = require("../utils/Logger");
-const ResponseHandler = require("../utils/ResponseHandler");
-
 // Setup multer storage (مؤقت فقط)
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -303,26 +299,11 @@ router.post(
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // Log login attempt
-    logger.info("Login attempt", { email, ip: req.ip });
-
-    // Input validation
-    if (!email || !password) {
-      logger.warn("Login failed: Missing credentials", { email, ip: req.ip });
-      return ResponseHandler.validationError(
-        res,
-        null,
-        "Email and password are required"
-      );
-    }
-
     const user = await User.findOne({ email });
     const user2 = await Client.findOne({ email });
 
     if (!user && !user2) {
-      logger.warn("Login failed: User not found", { email, ip: req.ip });
-      return ResponseHandler.unauthorized(res, "Invalid email or password");
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     let isMatch = false;
@@ -338,26 +319,17 @@ router.post("/login", async (req, res) => {
 
         // Only check approval for Engineers
         if (user.role === "Engineer" && !user.isApproved) {
-          logger.warn("Login failed: Engineer not approved", {
-            email,
-            ip: req.ip,
-          });
-          return ResponseHandler.forbidden(
-            res,
-            "Your account is pending approval"
-          );
+          return res
+            .status(403)
+            .json({ message: "Your account is pending approval" });
         }
 
         // Check email verification for Engineers
         if (user.role === "Engineer" && !user.isVerified) {
-          logger.warn("Login failed: Engineer not verified", {
-            email,
-            ip: req.ip,
+          return res.status(403).json({
+            message:
+              "Please verify your email address using the code sent to your email before logging in.",
           });
-          return ResponseHandler.forbidden(
-            res,
-            "Please verify your email address using the code sent to your email before logging in."
-          );
         }
       }
     }
@@ -373,8 +345,7 @@ router.post("/login", async (req, res) => {
 
     // If no match found in either model
     if (!isMatch) {
-      logger.warn("Login failed: Invalid password", { email, ip: req.ip });
-      return ResponseHandler.unauthorized(res, "Invalid email or password");
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     // Set session based on user type
@@ -412,33 +383,13 @@ router.post("/login", async (req, res) => {
       redirectPath = "/";
     }
 
-    // Log successful login
-    logger.info("Login successful", {
-      email,
-      userType,
-      role: activeUser.role,
-      ip: req.ip,
+    res.json({
+      message: "Login successful",
+      redirectPath: redirectPath,
     });
-
-    return ResponseHandler.loginSuccess(
-      res,
-      {
-        user: {
-          id: activeUser._id,
-          email: activeUser.email,
-          role: activeUser.role,
-          name:
-            userType === "engineer"
-              ? `${activeUser.firstName} ${activeUser.lastName}`
-              : activeUser.name,
-        },
-        redirectPath: redirectPath,
-      },
-      "Login successful"
-    );
   } catch (error) {
-    logger.error("Login error:", error);
-    return ResponseHandler.error(res, "Server error during login", 500);
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
