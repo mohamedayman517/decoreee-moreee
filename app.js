@@ -14,6 +14,10 @@ const connectLivereload = require("connect-livereload");
 const favicon = require("serve-favicon");
 const nodemailer = require("nodemailer");
 
+// Import Logger system and Response Handler
+const logger = require("./utils/Logger");
+const ResponseHandler = require("./utils/ResponseHandler");
+
 const app = express();
 const port = process.env.PORT || 3000;
 const uploadDir = path.join(__dirname, "uploads");
@@ -21,7 +25,9 @@ const uploadDir = path.join(__dirname, "uploads");
 // Ensure uploads directory exists
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log(`✅ Created uploads directory at ${uploadDir}`);
+  logger.info(`Created uploads directory at ${uploadDir}`);
+} else {
+  logger.info(`Uploads directory exists at ${uploadDir}`);
 }
 
 const httpServer = http.createServer(app);
@@ -289,6 +295,26 @@ app.use("/", ConfirmationRoutes);
 app.use("/", registerCustomerRoutes);
 app.use("/test", testRoutes); // Test routes for new system
 
+// Health Check endpoint using Response Handler
+app.get("/health", (req, res) => {
+  try {
+    const healthData = {
+      status: "OK",
+      timestamp: new Date(),
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      environment: process.env.NODE_ENV || "development",
+      version: "1.0.0",
+    };
+
+    logger.info("Health check requested", { ip: req.ip });
+    return ResponseHandler.success(res, healthData, "System is healthy");
+  } catch (error) {
+    logger.error("Health check failed:", error);
+    return ResponseHandler.error(res, "Health check failed", 500);
+  }
+});
+
 // Chat route
 app.get("/chat/:userId1?/:userId2?", async (req, res) => {
   try {
@@ -330,42 +356,56 @@ app.get("/verify", (req, res) => {
   });
 });
 
-// Error handling middleware
+// Error handling middleware with Response Handler
 app.use((err, req, res, next) => {
-  console.error("Error occurred:", err);
+  logger.error("Application Error:", {
+    message: err.message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method,
+    ip: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+
   if (err.message === "Not allowed by CORS") {
-    return res.status(403).json({
-      error: "CORS Error",
-      message: "Origin not allowed",
-      origin: req.headers.origin,
-    });
+    return ResponseHandler.forbidden(res, "Origin not allowed");
   }
-  res.status(500).json({ error: "Internal Server Error" });
+
+  return ResponseHandler.error(res, "Internal Server Error", 500);
 });
 
 // Database connection and server start
+logger.info("Starting application...");
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
+    logger.info("MongoDB connected successfully");
+
     httpServer.listen(port, () => {
       const baseUrl =
         process.env.BASE_URL ||
         `https://decoreee-moreee-production-3e92.up.railway.app/`;
-      console.log("🔧 Environment Configuration:");
-      console.log(`   NODE_ENV: ${process.env.NODE_ENV}`);
-      console.log(`   BASE_URL: ${process.env.BASE_URL}`);
-      console.log(
-        `   SESSION_SECRET: ${process.env.SESSION_SECRET ? "Set" : "Not Set"}`
-      );
-      console.log(`   MONGO_URI: ${process.env.MONGO_URI ? "Set" : "Not Set"}`);
-      console.log(
+
+      logger.info("Environment Configuration:", {
+        NODE_ENV: process.env.NODE_ENV,
+        BASE_URL: process.env.BASE_URL,
+        SESSION_SECRET: process.env.SESSION_SECRET ? "Set" : "Not Set",
+        MONGO_URI: process.env.MONGO_URI ? "Set" : "Not Set",
+        PORT: port,
+      });
+
+      const serverUrl =
         process.env.NODE_ENV === "development"
-          ? `🚀 Server running on http://localhost:${port}`
-          : `🚀 Server running on ${baseUrl}`
-      );
+          ? `http://localhost:${port}`
+          : baseUrl;
+
+      logger.info(`Server running on ${serverUrl}`);
+      console.log(`🚀 Server running on ${serverUrl}`);
     });
   })
   .catch((err) => {
+    logger.error("Failed to connect to MongoDB:", err);
     console.error("❌ Failed to connect to MongoDB:", err);
     process.exit(1);
   });
