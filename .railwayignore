@@ -1,0 +1,52 @@
+# Railway ignore file - reduces deployment size and speed
+
+# Development files
+*.md
+README.md
+REFACTORING_SUMMARY.md
+base64_image_implementation.md
+test-system.md
+github_upload_instructions.txt
+
+# Documentation
+examples/
+docs/
+
+# Test files
+tests/
+jest.config.js
+*.test.js
+*.spec.js
+
+# Development tools
+.vscode/
+.idea/
+*.log
+*.logs
+
+# Temporary files
+uploads/
+public/uploads/
+*.tmp
+*.temp
+
+# Large unnecessary files
+stripe.exe
+*.svg
+dark_mode_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg
+light_mode_24dp_E8EAED_FILL1_wght400_GRAD0_opsz24.svg
+
+# Scripts (if not needed in production)
+scripts/updateUsers.js
+
+# Development dependencies (handled by package.json)
+node_modules/
+
+# Git files
+.git/
+.gitignore
+
+# Environment files (use Railway variables instead)
+.env.example
+.env.local
+.env.development

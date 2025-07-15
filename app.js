@@ -338,6 +338,18 @@ app.get("/verify", (req, res) => {
   });
 });
 
+// Health check endpoint for Railway
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+    database:
+      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error("Error occurred:", err);

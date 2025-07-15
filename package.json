@@ -4,11 +4,14 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "dev": "nodemon --ext js,ejs",
     "watch": "nodemon --ext js,ejs",
+    "build": "echo 'No build step required for this project'",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint .",
-    "security-audit": "npm audit"
+    "security-audit": "npm audit",
+    "railway:start": "NODE_ENV=production node app.js"
   },
   "keywords": [],
   "author": "",
