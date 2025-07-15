@@ -281,7 +281,7 @@ app.use("/", contactRoutes);
 app.use("/", designersRoutes);
 app.use("/", profileRoutes);
 app.use("/", paymentRoutes);
-app.use("/", favoriteRoutes);
+app.use("/", favoriteRoutes); // This handles /api/favorites/* routes
 app.use("/", userProfileRoutes);
 app.use("/", authRoute);
 app.use("/", BookingRoutes);

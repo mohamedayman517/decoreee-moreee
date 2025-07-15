@@ -38,7 +38,9 @@ router.post("/api/favorites/add", async (req, res) => {
     );
 
     if (isAlreadyFavorite) {
-      return res.status(400).json({ error: "Engineer is already in favorites" });
+      return res
+        .status(400)
+        .json({ error: "Engineer is already in favorites" });
     }
 
     // Add engineer to favorites
@@ -62,11 +64,22 @@ router.post("/api/favorites/add", async (req, res) => {
   }
 });
 
+// Handle missing engineerId parameter
+router.delete("/api/favorites/remove", (req, res) => {
+  res.status(400).json({
+    error: "Engineer ID is required",
+    message:
+      "Please provide engineerId parameter in the URL: /api/favorites/remove/:engineerId",
+  });
+});
+
 // Remove engineer from favorites
 router.delete("/api/favorites/remove/:engineerId", async (req, res) => {
   try {
     if (!req.session.user) {
-      return res.status(401).json({ error: "Please login to remove favorites" });
+      return res
+        .status(401)
+        .json({ error: "Please login to remove favorites" });
     }
 
     const { engineerId } = req.params;
