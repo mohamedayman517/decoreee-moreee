@@ -1,11 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const Package = require("../../models/packageSchema");
+const mongoose = require("mongoose");
 
 // Get single package by ID
 router.get("/:id", async (req, res) => {
   try {
-    const package = await Package.findById(req.params.id);
+    const { id } = req.params;
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid package ID format",
+      });
+    }
+
+    const package = await Package.findById(id);
     if (!package) {
       return res
         .status(404)
@@ -21,6 +32,16 @@ router.get("/:id", async (req, res) => {
 // Update a package
 router.put("/:id", async (req, res) => {
   try {
+    const { id } = req.params;
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid package ID format",
+      });
+    }
+
     const { name, description, price, essentialItems } = req.body;
 
     // Validate input - all fields are required
@@ -65,7 +86,17 @@ router.put("/:id", async (req, res) => {
 // Delete a package
 router.delete("/:id", async (req, res) => {
   try {
-    const deletedPackage = await Package.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid package ID format",
+      });
+    }
+
+    const deletedPackage = await Package.findByIdAndDelete(id);
 
     if (!deletedPackage) {
       return res
