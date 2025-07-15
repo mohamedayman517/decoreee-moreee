@@ -300,16 +300,6 @@ router.get("/api/favorites/list", async (req, res) => {
   }
 });
 
-// Handle other HTTP methods for /api/favorites/remove
-router.all("/api/favorites/remove", (req, res) => {
-  console.log(`🔍 ${req.method} /api/favorites/remove accessed`);
-  res.status(405).json({
-    error: "Method not allowed",
-    message: `${req.method} method is not supported. Use DELETE method.`,
-    allowedMethods: ["DELETE"],
-  });
-});
-
 // Remove engineer from favorites
 router.delete("/api/favorites/remove/:engineerId", async (req, res) => {
   try {

@@ -12,7 +12,6 @@ const methodOverride = require("method-override");
 const livereload = require("livereload");
 const connectLivereload = require("connect-livereload");
 const favicon = require("serve-favicon");
-const nodemailer = require("nodemailer");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -37,11 +36,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-const allowedOrigins = [
-  process.env.NODE_ENV === "development" ? "http://localhost:3000" : null,
-  "https://decoreee-moreee-production-3e92.up.railway.app",
-  process.env.BASE_URL,
-].filter(Boolean);
 
 app.use(
   cors({
