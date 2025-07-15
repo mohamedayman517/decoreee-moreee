@@ -17,8 +17,33 @@ router.get("/engineer/:engID", async (req, res) => {
 // جلب كل المهندسين مع باكدجاتهم لمناسبة معينة
 router.get("/by-occasion", async (req, res) => {
   try {
+    console.log("🔍 /by-occasion route accessed");
+    console.log("Query parameters:", req.query);
+    console.log("Request headers:", req.headers);
+
     const occasion = req.query.occasion;
-    if (!occasion) return res.status(400).send("Occasion is required");
+    if (!occasion) {
+      console.log("❌ No occasion provided");
+      return res.status(400).json({
+        success: false,
+        message: "Occasion parameter is required",
+      });
+    }
+
+    console.log(`🔍 Searching for engineers with occasion: ${occasion}`);
+
+    // Test database connection
+    console.log("🔍 Testing database connection...");
+    const mongoose = require("mongoose");
+    console.log("Database connection state:", mongoose.connection.readyState);
+
+    if (mongoose.connection.readyState !== 1) {
+      console.log("❌ Database not connected");
+      return res.status(500).json({
+        success: false,
+        message: "Database connection error",
+      });
+    }
 
     // جلب المهندسين الذين لديهم التخصص المطلوب (فلترة case-insensitive)
     const engineers = await User.find({
@@ -28,8 +53,11 @@ router.get("/by-occasion", async (req, res) => {
       specialties: { $in: [new RegExp(`^${occasion}$`, "i")] }, // فلترة case-insensitive
     });
 
+    console.log(`✅ Found ${engineers.length} engineers`);
+
     // جلب الباكدجات الخاصة بالمناسبة
     const packages = await Package.find({ eventType: occasion });
+    console.log(`✅ Found ${packages.length} packages`);
 
     // ربط كل مهندس بالباكدجات الخاصة به لهذه المناسبة (إن وجدت)
     const engineersWithPackages = engineers.map((engineer) => {
@@ -43,6 +71,8 @@ router.get("/by-occasion", async (req, res) => {
       };
     });
 
+    console.log("✅ Data prepared, rendering template");
+
     // إرسال البيانات للواجهة الأمامية (eng.ejs)
     res.render("eng", {
       engineers: engineersWithPackages,
@@ -50,8 +80,16 @@ router.get("/by-occasion", async (req, res) => {
       user: req.session && req.session.user ? req.session.user : null,
     });
   } catch (err) {
-    console.error("Error in /by-occasion:", err);
-    res.status(500).send("Server Error");
+    console.error("❌ Error in /by-occasion:", err);
+    console.error("Error stack:", err.stack);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error:
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "Internal Server Error",
+    });
   }
 });
 
