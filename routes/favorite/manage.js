@@ -189,12 +189,23 @@ router.post("/api/favorites/remove", async (req, res) => {
     console.log("✅ User saved successfully");
 
     console.log("✅ Engineer removed from favorites successfully (POST)");
+
+    // Multiple response formats for frontend compatibility
     const response = {
       message: "Engineer removed from favorites successfully",
       method: "POST",
       success: true,
       engineerId: engineerId,
       remainingFavorites: user.favoriteEngineers.length,
+      // Additional formats the frontend might expect
+      status: "success",
+      data: {
+        engineerId: engineerId,
+        removed: true,
+        favoriteEngineers: user.favoriteEngineers,
+      },
+      // Simple success flag
+      ok: true,
     };
     console.log("📤 Sending response:", response);
 
@@ -213,6 +224,23 @@ router.post("/api/favorites/remove", async (req, res) => {
       error: "Server error",
       success: false,
     });
+  }
+});
+
+// Simple remove endpoint for testing
+router.post("/api/favorites/remove-simple", async (req, res) => {
+  try {
+    console.log("🔍 POST /api/favorites/remove-simple accessed");
+    console.log("Request body:", req.body);
+
+    // Just return success without doing anything
+    const simpleResponse = { success: true };
+    console.log("📤 Sending simple response:", simpleResponse);
+
+    res.status(200).json(simpleResponse);
+  } catch (error) {
+    console.error("❌ Error in simple remove:", error);
+    res.status(500).json({ success: false });
   }
 });
 
