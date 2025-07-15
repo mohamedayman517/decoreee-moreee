@@ -172,13 +172,18 @@ router.post("/api/favorites/remove", async (req, res) => {
 
     // Remove engineer from favorites
     user.favoriteEngineers.splice(engineerIndex, 1);
+    console.log("🔄 Saving user after removing engineer...");
     await user.save();
+    console.log("✅ User saved successfully");
 
     console.log("✅ Engineer removed from favorites successfully (POST)");
-    res.json({
+    const response = {
       message: "Engineer removed from favorites successfully",
       method: "POST",
-    });
+      success: true,
+    };
+    console.log("📤 Sending response:", response);
+    res.status(200).json(response);
   } catch (error) {
     console.error("❌ Error removing from favorites (POST):", error);
     res.status(500).json({ error: "Server error" });
