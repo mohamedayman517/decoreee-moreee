@@ -71,13 +71,52 @@ router.post("/api/favorites/add", async (req, res) => {
   }
 });
 
-// Handle missing engineerId parameter
+// Handle missing engineerId parameter - check request body too
 router.delete("/api/favorites/remove", (req, res) => {
   console.log("🔍 DELETE /api/favorites/remove accessed (missing engineerId)");
+  console.log("Request body:", req.body);
+
+  // Check if engineerId is in request body
+  const engineerId = req.body.engineerId;
+  if (engineerId) {
+    console.log(
+      `🔄 Found engineerId in body: ${engineerId}, redirecting to correct URL`
+    );
+    return res.status(400).json({
+      error: "Incorrect URL format",
+      message: `Engineer ID should be in URL path, not request body. Use: /api/favorites/remove/${engineerId}`,
+      correctUrl: `/api/favorites/remove/${engineerId}`,
+      providedEngineerId: engineerId,
+    });
+  }
+
   res.status(400).json({
     error: "Engineer ID is required",
     message:
       "Please provide engineerId parameter in the URL: /api/favorites/remove/:engineerId",
+  });
+});
+
+// Handle POST method (common frontend mistake)
+router.post("/api/favorites/remove", (req, res) => {
+  console.log("🔍 POST /api/favorites/remove accessed (should be DELETE)");
+  const engineerId = req.body.engineerId || req.params.engineerId;
+
+  if (engineerId) {
+    // Redirect to correct method
+    console.log(`🔄 Redirecting POST to DELETE for engineer ${engineerId}`);
+    return res.status(405).json({
+      error: "Method not allowed",
+      message: "Use DELETE method instead of POST",
+      correctUrl: `/api/favorites/remove/${engineerId}`,
+      correctMethod: "DELETE",
+    });
+  }
+
+  res.status(400).json({
+    error: "Engineer ID is required",
+    message:
+      "Please provide engineerId in request body or use DELETE /api/favorites/remove/:engineerId",
   });
 });
 
