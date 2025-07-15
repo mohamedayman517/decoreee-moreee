@@ -7,6 +7,18 @@ const Client = require("../../models/clientSchema");
 router.use("/api/favorites/*", (req, res, next) => {
   console.log(`🔍 Favorites API Request: ${req.method} ${req.originalUrl}`);
   console.log("Headers:", req.headers);
+
+  // Handle CORS preflight
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    return res.status(200).end();
+  }
+
   next();
 });
 
@@ -181,12 +193,72 @@ router.post("/api/favorites/remove", async (req, res) => {
       message: "Engineer removed from favorites successfully",
       method: "POST",
       success: true,
+      engineerId: engineerId,
+      remainingFavorites: user.favoriteEngineers.length,
     };
     console.log("📤 Sending response:", response);
+
+    // Set CORS headers explicitly
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
     res.status(200).json(response);
   } catch (error) {
     console.error("❌ Error removing from favorites (POST):", error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({
+      error: "Server error",
+      success: false,
+    });
+  }
+});
+
+// Get user's favorites list
+router.get("/api/favorites/list", async (req, res) => {
+  try {
+    console.log("🔍 GET /api/favorites/list accessed");
+
+    if (!req.session.user) {
+      return res.status(401).json({
+        error: "Please login to view favorites",
+        success: false,
+      });
+    }
+
+    const userId = req.session.user._id;
+    const user = await Client.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found",
+        success: false,
+      });
+    }
+
+    // Initialize favoriteEngineers if it doesn't exist
+    if (!user.favoriteEngineers) {
+      user.favoriteEngineers = [];
+    }
+
+    console.log(
+      "✅ Returning favorites list:",
+      user.favoriteEngineers.length,
+      "items"
+    );
+    res.status(200).json({
+      success: true,
+      favorites: user.favoriteEngineers,
+      count: user.favoriteEngineers.length,
+    });
+  } catch (error) {
+    console.error("❌ Error getting favorites list:", error);
+    res.status(500).json({
+      error: "Server error",
+      success: false,
+    });
   }
 });
 
