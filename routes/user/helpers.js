@@ -44,7 +44,7 @@ const upload = multer({
 });
 
 // Email transporter setup
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL,
@@ -56,11 +56,11 @@ const transporter = nodemailer.createTransporter({
 function convertToBase64(filePath) {
   try {
     const fileBuffer = fs.readFileSync(filePath);
-    const base64String = fileBuffer.toString('base64');
+    const base64String = fileBuffer.toString("base64");
     const mimeType = getMimeType(filePath);
     return `data:${mimeType};base64,${base64String}`;
   } catch (error) {
-    console.error('Error converting file to base64:', error);
+    console.error("Error converting file to base64:", error);
     return null;
   }
 }
@@ -69,15 +69,15 @@ function convertToBase64(filePath) {
 function getMimeType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
   switch (ext) {
-    case '.jpg':
-    case '.jpeg':
-      return 'image/jpeg';
-    case '.png':
-      return 'image/png';
-    case '.gif':
-      return 'image/gif';
+    case ".jpg":
+    case ".jpeg":
+      return "image/jpeg";
+    case ".png":
+      return "image/png";
+    case ".gif":
+      return "image/gif";
     default:
-      return 'application/octet-stream';
+      return "application/octet-stream";
   }
 }
 

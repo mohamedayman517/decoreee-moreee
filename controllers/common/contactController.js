@@ -15,12 +15,12 @@ class ContactController {
   static async submitContactForm(req, res) {
     try {
       const { fullName, email, phone, subject, message } = req.body;
-      
+
       if (!fullName || !email || !phone || !subject || !message) {
         return res.status(400).json({ message: "Please fill all fields" });
       }
 
-      const transporter = nodemailer.createTransporter({
+      const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
           user: process.env.EMAIL,
