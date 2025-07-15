@@ -97,6 +97,27 @@ router.delete("/api/favorites/remove", (req, res) => {
   });
 });
 
+// Handle GET method (common frontend mistake)
+router.get("/api/favorites/remove", (req, res) => {
+  console.log("🔍 GET /api/favorites/remove accessed (should be DELETE)");
+  const engineerId = req.query.engineerId || req.params.engineerId;
+
+  if (engineerId) {
+    console.log(`🔄 GET request with engineerId: ${engineerId}`);
+    return res.status(405).json({
+      error: "Method not allowed",
+      message: "Use DELETE method instead of GET",
+      correctUrl: `/api/favorites/remove/${engineerId}`,
+      correctMethod: "DELETE",
+    });
+  }
+
+  res.status(400).json({
+    error: "Engineer ID is required",
+    message: "Use DELETE /api/favorites/remove/:engineerId",
+  });
+});
+
 // Handle POST method (common frontend mistake)
 router.post("/api/favorites/remove", (req, res) => {
   console.log("🔍 POST /api/favorites/remove accessed (should be DELETE)");
