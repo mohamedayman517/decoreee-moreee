@@ -39,7 +39,9 @@ class PaymentController {
         payment_method: payment_method_id,
         confirmation_method: "manual",
         confirm: true,
-        return_url: `${process.env.BASE_URL || "http://localhost:3000"}/payment-success`,
+        return_url: `${
+          process.env.BASE_URL || "http://localhost:3000"
+        }/payment-success`,
         metadata: {
           booking_id: finalBookingId,
           package_id: package_id,
@@ -54,12 +56,12 @@ class PaymentController {
         console.log("Payment succeeded, processing booking...");
 
         // Find package and engineer
-        const package = await Package.findById(package_id);
-        if (!package) {
+        const packageData = await Package.findById(package_id);
+        if (!packageData) {
           throw new Error("Package not found");
         }
 
-        const engineer = await User.findById(package.engID);
+        const engineer = await User.findById(packageData.engID);
         if (!engineer) {
           throw new Error("Engineer not found");
         }
@@ -79,9 +81,9 @@ class PaymentController {
             clientName: client.name || "Client",
             clientId: user_id,
             phone: client.phone || "Not provided",
-            projectType: event_type || package.eventType || "Event",
-            packageName: package_name || package.name || "Package",
-            packageId: package._id.toString(),
+            projectType: event_type || packageData.eventType || "Event",
+            packageName: package_name || packageData.name || "Package",
+            packageId: packageData._id.toString(),
             price: amount / 100,
             deposit: amount / 100,
             date: new Date(event_date),
@@ -98,8 +100,8 @@ class PaymentController {
               clientName: client.name || "Client",
               clientId: user_id,
               phone: client.phone || "Not provided",
-              projectType: event_type || package.eventType || "Event",
-              packageName: package_name || package.name || "Package",
+              projectType: event_type || packageData.eventType || "Event",
+              packageName: package_name || packageData.name || "Package",
               price: amount / 100,
               deposit: amount / 100,
               commission: Math.round((amount / 100) * 0.1),
