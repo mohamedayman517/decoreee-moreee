@@ -157,8 +157,12 @@ router.post("/api/favorites/remove", async (req, res) => {
       `🔍 Removing engineer ${engineerId} from favorites (POST method)`
     );
 
-    const userId = req.session.user._id;
-    const user = await Client.findById(userId);
+    // Use req.session.user.id instead of _id (session structure uses 'id')
+    const userId = req.session.user.id;
+    console.log(`🔍 Looking for user with ID: ${userId}`);
+
+    // Get client by email (more reliable than ID lookup)
+    const user = await Client.findOne({ email: req.session.user.email });
 
     if (!user) {
       console.log("❌ User not found");
@@ -166,6 +170,7 @@ router.post("/api/favorites/remove", async (req, res) => {
     }
 
     console.log("User favoriteEngineers:", user.favoriteEngineers);
+    console.log("Looking for engineerId:", engineerId);
 
     // Initialize favoriteEngineers if it doesn't exist
     if (!user.favoriteEngineers) {
@@ -173,9 +178,12 @@ router.post("/api/favorites/remove", async (req, res) => {
     }
 
     // Check if engineer is in favorites (search by engineerId)
-    const engineerIndex = user.favoriteEngineers.findIndex(
-      (fav) => fav.engineerId && fav.engineerId.toString() === engineerId
-    );
+    const engineerIndex = user.favoriteEngineers.findIndex((fav) => {
+      console.log("Comparing:", fav.engineerId?.toString(), "with", engineerId);
+      return fav.engineerId && fav.engineerId.toString() === engineerId;
+    });
+
+    console.log("Engineer index found:", engineerIndex);
 
     if (engineerIndex === -1) {
       console.log("❌ Engineer not in favorites");
@@ -206,6 +214,8 @@ router.post("/api/favorites/remove", async (req, res) => {
       },
       // Simple success flag
       ok: true,
+      // Add favorites array for frontend compatibility
+      favorites: user.favoriteEngineers,
     };
     console.log("📤 Sending response:", response);
 
@@ -256,8 +266,8 @@ router.get("/api/favorites/list", async (req, res) => {
       });
     }
 
-    const userId = req.session.user._id;
-    const user = await Client.findById(userId);
+    // Use email lookup instead of ID (more reliable)
+    const user = await Client.findOne({ email: req.session.user.email });
 
     if (!user) {
       return res.status(404).json({

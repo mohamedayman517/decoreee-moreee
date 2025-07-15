@@ -6,7 +6,8 @@ const User = require("../../models/userSchema");
 // Get user profile (current user)
 router.get("/userProfile", async (req, res) => {
   try {
-    const userID = req.session.user?._id;
+    // Use req.session.user.id instead of _id (session structure uses 'id')
+    const userID = req.session.user?.id;
     if (!userID) return res.redirect("/login");
 
     let userData = await Client.findOne({ _id: userID }).lean();
@@ -41,11 +42,13 @@ router.get("/userProfile/:id", async (req, res) => {
       }
     }
 
-    // Populate favorite engineers profile photos
+    // Populate favorite engineers profile photos and ensure engineerId is available
     if (userData.favoriteEngineers) {
       for (const fav of userData.favoriteEngineers) {
         const engineer = await User.findById(fav.engineerId).lean();
         if (engineer?.profilePhoto) fav.profilePhoto = engineer.profilePhoto;
+        // Ensure engineerId is available for frontend
+        if (!fav.engineerId) fav.engineerId = fav.engineerId;
       }
     }
 
