@@ -29,6 +29,14 @@ const httpServer = http.createServer(app);
 // Basic middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Global request logging for debugging favorites API
+app.use((req, res, next) => {
+  if (req.url.includes("/api/favorites")) {
+    console.log(`🌐 Global: ${req.method} ${req.url} - ${req.originalUrl}`);
+  }
+  next();
+});
 const allowedOrigins = [
   process.env.NODE_ENV === "development" ? "http://localhost:3000" : null,
   "https://decoreee-moreee-production-3e92.up.railway.app",
