@@ -3,6 +3,13 @@ const router = express.Router();
 const User = require("../../models/userSchema");
 const Client = require("../../models/clientSchema");
 
+// Log all requests to favorites API
+router.use("/api/favorites/*", (req, res, next) => {
+  console.log(`🔍 Favorites API Request: ${req.method} ${req.originalUrl}`);
+  console.log("Headers:", req.headers);
+  next();
+});
+
 // Add engineer to favorites
 router.post("/api/favorites/add", async (req, res) => {
   try {
@@ -66,6 +73,7 @@ router.post("/api/favorites/add", async (req, res) => {
 
 // Handle missing engineerId parameter
 router.delete("/api/favorites/remove", (req, res) => {
+  console.log("🔍 DELETE /api/favorites/remove accessed (missing engineerId)");
   res.status(400).json({
     error: "Engineer ID is required",
     message:
@@ -73,16 +81,36 @@ router.delete("/api/favorites/remove", (req, res) => {
   });
 });
 
+// Handle other HTTP methods for /api/favorites/remove
+router.all("/api/favorites/remove", (req, res) => {
+  console.log(`🔍 ${req.method} /api/favorites/remove accessed`);
+  res.status(405).json({
+    error: "Method not allowed",
+    message: `${req.method} method is not supported. Use DELETE method.`,
+    allowedMethods: ["DELETE"],
+  });
+});
+
 // Remove engineer from favorites
 router.delete("/api/favorites/remove/:engineerId", async (req, res) => {
   try {
+    console.log(
+      `🔍 DELETE /api/favorites/remove/${req.params.engineerId} accessed`
+    );
+    console.log(
+      "Session user:",
+      req.session.user ? "Logged in" : "Not logged in"
+    );
+
     if (!req.session.user) {
+      console.log("❌ User not logged in");
       return res
         .status(401)
         .json({ error: "Please login to remove favorites" });
     }
 
     const { engineerId } = req.params;
+    console.log(`🔍 Removing engineer ${engineerId} from favorites`);
 
     // Get client by email
     const client = await Client.findOne({ email: req.session.user.email });
