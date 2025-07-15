@@ -118,27 +118,61 @@ router.get("/api/favorites/remove", (req, res) => {
   });
 });
 
-// Handle POST method (common frontend mistake)
-router.post("/api/favorites/remove", (req, res) => {
-  console.log("🔍 POST /api/favorites/remove accessed (should be DELETE)");
-  const engineerId = req.body.engineerId || req.params.engineerId;
+// Handle POST method - Support for frontend compatibility
+router.post("/api/favorites/remove", async (req, res) => {
+  try {
+    console.log("🔍 POST /api/favorites/remove accessed");
+    console.log("Request body:", req.body);
 
-  if (engineerId) {
-    // Redirect to correct method
-    console.log(`🔄 Redirecting POST to DELETE for engineer ${engineerId}`);
-    return res.status(405).json({
-      error: "Method not allowed",
-      message: "Use DELETE method instead of POST",
-      correctUrl: `/api/favorites/remove/${engineerId}`,
-      correctMethod: "DELETE",
+    if (!req.session.user) {
+      console.log("❌ User not logged in");
+      return res.status(401).json({
+        error: "Please login to remove favorites",
+      });
+    }
+
+    const engineerId = req.body.engineerId || req.body.engineer_id;
+
+    if (!engineerId) {
+      console.log("❌ No engineerId provided in POST body");
+      return res.status(400).json({
+        error: "Engineer ID is required",
+        message: "Please provide engineerId in request body",
+      });
+    }
+
+    console.log(
+      `🔍 Removing engineer ${engineerId} from favorites (POST method)`
+    );
+
+    const userId = req.session.user._id;
+    const user = await Client.findById(userId);
+
+    if (!user) {
+      console.log("❌ User not found");
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if engineer is in favorites
+    const engineerIndex = user.favorites.indexOf(engineerId);
+    if (engineerIndex === -1) {
+      console.log("❌ Engineer not in favorites");
+      return res.status(400).json({ error: "Engineer is not in favorites" });
+    }
+
+    // Remove engineer from favorites
+    user.favorites.splice(engineerIndex, 1);
+    await user.save();
+
+    console.log("✅ Engineer removed from favorites successfully (POST)");
+    res.json({
+      message: "Engineer removed from favorites successfully",
+      method: "POST",
     });
+  } catch (error) {
+    console.error("❌ Error removing from favorites (POST):", error);
+    res.status(500).json({ error: "Server error" });
   }
-
-  res.status(400).json({
-    error: "Engineer ID is required",
-    message:
-      "Please provide engineerId in request body or use DELETE /api/favorites/remove/:engineerId",
-  });
 });
 
 // Handle other HTTP methods for /api/favorites/remove
