@@ -252,22 +252,22 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Import routes
-const userRoutes = require("./routes/userRoutes");
-const messageRoutes = require("./routes/messageRoutes");
-const projectRoutes = require("./routes/projectRoutes");
-const adminRoutes = require("./routes/adminRoutes");
+const userRoutes = require("./routes/user");
+const messageRoutes = require("./routes/message");
+const projectRoutes = require("./routes/project");
+const adminRoutes = require("./routes/admin");
 const indexRoutes = require("./routes/indexRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const designersRoutes = require("./routes/designersRoutes");
-const profileRoutes = require("./routes/profileRoutes");
+const profileRoutes = require("./routes/profile");
 const paymentRoutes = require("./routes/paymentRoutes");
-const favoriteRoutes = require("./routes/FavoriteRoutes");
-const userProfileRoutes = require("./routes/userProfileRoutes");
-const authRoute = require("./routes/authRoutes");
-const packageRoutes = require("./routes/packageRoutes");
-const BookingRoutes = require("./routes/BookingRoutes");
+const favoriteRoutes = require("./routes/favorite");
+const userProfileRoutes = require("./routes/userProfile");
+const authRoute = require("./routes/auth");
+const packageRoutes = require("./routes/package");
+const BookingRoutes = require("./routes/booking");
 const ConfirmationRoutes = require("./routes/confirmationRoutes");
-const registerCustomerRoutes = require("./routes/registerCustomerRoutes");
+const registerCustomerRoutes = require("./routes/customer");
 const testRoutes = require("./routes/testRoutes");
 
 // Use routes
