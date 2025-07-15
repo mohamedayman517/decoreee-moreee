@@ -153,15 +153,25 @@ router.post("/api/favorites/remove", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if engineer is in favorites
-    const engineerIndex = user.favorites.indexOf(engineerId);
+    console.log("User favoriteEngineers:", user.favoriteEngineers);
+
+    // Initialize favoriteEngineers if it doesn't exist
+    if (!user.favoriteEngineers) {
+      user.favoriteEngineers = [];
+    }
+
+    // Check if engineer is in favorites (search by engineerId)
+    const engineerIndex = user.favoriteEngineers.findIndex(
+      (fav) => fav.engineerId && fav.engineerId.toString() === engineerId
+    );
+
     if (engineerIndex === -1) {
       console.log("❌ Engineer not in favorites");
       return res.status(400).json({ error: "Engineer is not in favorites" });
     }
 
     // Remove engineer from favorites
-    user.favorites.splice(engineerIndex, 1);
+    user.favoriteEngineers.splice(engineerIndex, 1);
     await user.save();
 
     console.log("✅ Engineer removed from favorites successfully (POST)");
