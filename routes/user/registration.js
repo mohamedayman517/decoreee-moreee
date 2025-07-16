@@ -17,7 +17,7 @@ router.get("/register", (req, res) => {
 router.post(
   "/register",
   (req, res, next) => {
-    // معالجة أخطاء Multer
+    // Handle Multer errors
     const uploadMiddleware = upload.fields([
       { name: "profilePhoto", maxCount: 1 },
       { name: "idCardPhoto", maxCount: 1 },
@@ -25,22 +25,22 @@ router.post(
 
     uploadMiddleware(req, res, (err) => {
       if (err instanceof multer.MulterError) {
-        // خطأ في Multer
+        // Multer error
         console.error("❌ Multer error:", err);
         return res.status(400).json({
           success: false,
-          message: `خطأ في تحميل الملف: ${err.message}`,
+          message: `File upload error: ${err.message}`,
         });
       } else if (err) {
-        // خطأ غير معروف
+        // Unknown error
         console.error("❌ Unknown error during file upload:", err);
         return res.status(500).json({
           success: false,
-          message: "حدث خطأ أثناء تحميل الملف. يرجى المحاولة مرة أخرى.",
+          message: "An error occurred during file upload. Please try again.",
         });
       }
 
-      // تم تحميل الملفات بنجاح، متابعة المعالجة
+      // Files uploaded successfully, continue processing
       next();
     });
   },
@@ -85,7 +85,7 @@ router.post(
       const { firstName, lastName, email, password, phone, role, bio } =
         req.body;
 
-      // فحص الإيميل في كلا النموذجين لمنع التكرار
+      // Check email in both models to prevent duplication
       console.log("🔍 Checking email:", email);
       const existingUser = await User.findOne({ email });
       const existingClient = await Client.findOne({ email });
@@ -101,7 +101,7 @@ router.post(
         return res.status(400).json({
           success: false,
           message:
-            "هذا البريد الإلكتروني مسجل مسبقاً. يرجى استخدام بريد إلكتروني آخر أو تسجيل الدخول.",
+            "This email is already registered. Please use a different email or login.",
         });
       }
 
@@ -156,15 +156,15 @@ router.post(
 
       if (role === "Engineer") {
         userObj.profilePhoto = profilePhotoBase64 || "/uploads/default.png";
-        // تأكد من أن صورة بطاقة الهوية موجودة للمهندسين
+        // Ensure ID card photo is provided for engineers
         if (!idCardPhotoBase64) {
           return res.status(400).json({
             success: false,
-            message: "صورة بطاقة الهوية مطلوبة للمهندسين",
+            message: "ID card photo is required for engineers",
           });
         }
 
-        // تسجيل معلومات إضافية للتصحيح
+        // Log additional information for debugging
         console.log("✅ ID Card Photo processed successfully");
         userObj.idCardPhoto = idCardPhotoBase64;
       } else {

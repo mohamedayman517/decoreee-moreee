@@ -82,10 +82,10 @@ class LoginController {
   }
 
   /**
-   * Get current user - نفس المنطق من routes/user/login.js
+   * Get current user - same logic from routes/user/login.js
    */
   static getCurrentUser(req, res) {
-    console.log("الجلسة الحالية:", req.session);
+    console.log("Current session:", req.session);
     if (req.session && req.session.user) {
       res.json({ userId: req.session.user._id });
     } else {

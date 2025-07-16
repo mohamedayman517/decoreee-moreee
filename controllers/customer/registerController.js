@@ -39,7 +39,7 @@ class CustomerRegisterController {
         return res.status(400).json({
           success: false,
           message:
-            "هذا البريد الإلكتروني مسجل مسبقاً. يرجى استخدام بريد إلكتروني آخر أو تسجيل الدخول.",
+            "This email is already registered. Please use a different email or login.",
         });
       }
 

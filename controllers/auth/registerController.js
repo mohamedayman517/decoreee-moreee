@@ -4,7 +4,7 @@ const Client = require("../../models/clientSchema");
 
 class RegisterController {
   /**
-   * Handle user registration - نفس المنطق من routes/auth/register.js
+   * Handle user registration - same logic from routes/auth/register.js
    */
   static async register(req, res) {
     try {
@@ -21,7 +21,7 @@ class RegisterController {
 
       console.log("REGISTER BODY:", req.body);
 
-      // فحص الإيميل في كلا النموذجين لمنع التكرار
+      // Check email in both models to prevent duplication
       console.log("🔍 [Engineer Registration] Checking email:", email);
       const existingUser = await User.findOne({ email });
       const existingClient = await Client.findOne({ email });
@@ -41,7 +41,7 @@ class RegisterController {
         );
         return res.status(400).json({
           message:
-            "هذا البريد الإلكتروني مسجل مسبقاً. يرجى استخدام بريد إلكتروني آخر أو تسجيل الدخول.",
+            "This email is already registered. Please use a different email or login.",
         });
       }
 

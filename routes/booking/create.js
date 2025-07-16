@@ -3,28 +3,28 @@ const router = express.Router();
 const CreateBookingController = require("../../controllers/booking/createController");
 const { isAuthenticated } = require("../../middleware/auth/authenticate");
 
-// عرض صفحة الحجز - استخدام Controller
+// Show booking page - using Controller
 router.get(
   "/booking",
   isAuthenticated,
   CreateBookingController.showBookingPage
 );
 
-// معالجة بيانات الحجز - استخدام Controller
+// Process booking data - using Controller
 router.post(
   "/booking",
   isAuthenticated,
   CreateBookingController.processBooking
 );
 
-// Proceed to payment page - استخدام Controller
+// Proceed to payment page - using Controller
 router.post(
   "/proceed-to-payment",
   isAuthenticated,
   CreateBookingController.proceedToPayment
 );
 
-// Payment success page - استخدام Controller
+// Payment success page - using Controller
 router.get("/payment-success", CreateBookingController.showPaymentSuccess);
 
 module.exports = router;

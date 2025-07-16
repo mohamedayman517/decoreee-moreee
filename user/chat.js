@@ -11,7 +11,8 @@ const engineerId = window.chatData?.engineerId;
 // التحقق من صحة المعرفات
 if (!userId || !engineerId) {
   console.error("Missing user IDs");
-  chatBox.innerHTML = '<div class="error">Error: Missing user information. Please refresh the page.</div>';
+  chatBox.innerHTML =
+    '<div class="error">Error: Missing user information. Please refresh the page.</div>';
   return;
 }
 
@@ -27,26 +28,28 @@ function loadMessages() {
   fetch(`/messages/${userId}/${engineerId}`)
     .then((response) => {
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
       return response.json();
     })
     .then((messages) => {
       if (Array.isArray(messages)) {
-        chatBox.innerHTML = ''; // مسح الرسائل القديمة
+        chatBox.innerHTML = ""; // مسح الرسائل القديمة
         messages.forEach((message) => {
-          const isSelf = message.senderType === 'user';
+          const isSelf = message.senderType === "user";
           displayMessage(message, isSelf ? "self" : "");
         });
         chatBox.scrollTop = chatBox.scrollHeight;
       } else {
-        console.error('Invalid messages format:', messages);
-        chatBox.innerHTML = '<div class="error">Error: Invalid message format received</div>';
+        console.error("Invalid messages format:", messages);
+        chatBox.innerHTML =
+          '<div class="error">Error: Invalid message format received</div>';
       }
     })
     .catch((error) => {
       console.error("Error fetching messages:", error);
-      chatBox.innerHTML = '<div class="error">Error loading messages. Please try again.</div>';
+      chatBox.innerHTML =
+        '<div class="error">Error loading messages. Please try again.</div>';
     });
 }
 
@@ -72,7 +75,7 @@ const sendMessage = () => {
       userId,
       engineerId,
       content,
-      senderType: 'user'
+      senderType: "user",
     };
 
     // حفظ الرسالة في قاعدة البيانات
@@ -85,7 +88,7 @@ const sendMessage = () => {
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         return res.json();
       })
@@ -114,12 +117,12 @@ messageInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 
-// الانضمام إلى الغرفة
+// Join the room
 socket.emit("joinRoom", { roomId });
 
-// استقبال الرسائل في الوقت الفعلي
+// Receive real-time messages
 socket.on("message", (message) => {
   console.log("✅ Received message:", message);
-  const isSelf = message.senderType === 'user';
+  const isSelf = message.senderType === "user";
   displayMessage(message, isSelf ? "self" : "");
 });

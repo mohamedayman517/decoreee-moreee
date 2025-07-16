@@ -110,7 +110,7 @@ router.post("/login", async (req, res) => {
 
 // Get current user route
 router.get("/get-current-user", (req, res) => {
-  console.log("الجلسة الحالية:", req.session);
+  console.log("Current session:", req.session);
   if (req.session && req.session.user) {
     res.json({ userId: req.session.user._id });
   } else {

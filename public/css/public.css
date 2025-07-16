@@ -1643,27 +1643,27 @@ p.lead {
   white-space: pre-line;
 }
 
-/* SweetAlert2 Arabic Support */
-.swal2-arabic {
+/* SweetAlert2 Custom Styling */
+.swal2-custom {
   font-family: "Cairo", sans-serif;
-  direction: rtl;
+  direction: ltr;
 }
 
-.swal2-arabic .swal2-title {
+.swal2-custom .swal2-title {
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-.swal2-arabic .swal2-content {
+.swal2-custom .swal2-content {
   font-size: 1.1rem;
 }
 
-.swal2-arabic .swal2-confirm {
+.swal2-custom .swal2-confirm {
   font-size: 1rem;
   padding: 0.5rem 1.5rem;
 }
 
-.swal2-arabic .swal2-cancel {
+.swal2-custom .swal2-cancel {
   font-size: 1rem;
   padding: 0.5rem 1.5rem;
 }

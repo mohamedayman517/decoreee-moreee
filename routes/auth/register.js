@@ -3,10 +3,10 @@ const router = express.Router();
 const RegisterController = require("../../controllers/auth/registerController");
 const { isNotAuthenticated } = require("../../middleware/auth/authenticate");
 
-// Registration route - استخدام Controller
+// Registration route - using Controller
 router.post("/register", RegisterController.register);
 
-// Registration page route - استخدام Controller مع middleware
+// Registration page route - using Controller with middleware
 router.get(
   "/register",
   isNotAuthenticated,
