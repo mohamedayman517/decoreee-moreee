@@ -46,14 +46,20 @@ document.addEventListener("DOMContentLoaded", function () {
           }, 2000);
         } else {
           if (response.status === 403) {
-            showAlert("Your account is pending approval. Please wait for admin approval.", "orange");
+            showAlert(
+              "Your account is pending approval. Please wait for admin approval.",
+              "orange"
+            );
           } else {
             showAlert(data.message || "Invalid email or password", "red");
           }
         }
       } catch (error) {
         console.error("Error:", error);
-        showAlert("Server error. Please try again later.", "red");
+        showAlert(
+          "Connection failed. Please check your internet connection and try again.",
+          "red"
+        );
       } finally {
         loginButton.disabled = false;
         loginButton.textContent = "Login";
@@ -66,4 +72,4 @@ document.addEventListener("DOMContentLoaded", function () {
     alertBox.style.display = "block";
     alertBox.style.color = color;
   }
-}); 
+});

@@ -349,12 +349,17 @@ app.use((err, req, res, next) => {
   console.error("Error occurred:", err);
   if (err.message === "Not allowed by CORS") {
     return res.status(403).json({
+      success: false,
       error: "CORS Error",
-      message: "Origin not allowed",
+      message: "Access denied: Origin not allowed by CORS policy",
       origin: req.headers.origin,
     });
   }
-  res.status(500).json({ error: "Internal Server Error" });
+  res.status(500).json({
+    success: false,
+    error: "Internal Server Error",
+    message: "An unexpected error occurred. Please try again later.",
+  });
 });
 
 // Database connection and server start

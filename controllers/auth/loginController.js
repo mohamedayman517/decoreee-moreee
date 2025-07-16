@@ -77,7 +77,10 @@ class LoginController {
       });
     } catch (error) {
       console.error("Login error:", error);
-      res.status(500).json({ message: "Error during login" });
+      res.status(500).json({
+        success: false,
+        message: "Login failed due to a server error. Please try again later.",
+      });
     }
   }
 
@@ -100,7 +103,11 @@ class LoginController {
     req.session.destroy((err) => {
       if (err) {
         console.error("Error destroying session:", err);
-        return res.status(500).json({ message: "Error during logout" });
+        return res.status(500).json({
+          success: false,
+          message:
+            "Logout failed. Please close your browser to ensure you're logged out.",
+        });
       }
       res.clearCookie("connect.sid");
       res.json({ success: true, message: "Logged out successfully" });

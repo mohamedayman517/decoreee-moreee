@@ -8,8 +8,8 @@ class AppError extends Error {
     super(message);
     this.statusCode = statusCode;
     this.isOperational = isOperational;
-    this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
-    
+    this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
+
     Error.captureStackTrace(this, this.constructor);
   }
 }
@@ -19,57 +19,57 @@ class ValidationError extends AppError {
   constructor(message, errors = []) {
     super(message, 400);
     this.errors = errors;
-    this.name = 'ValidationError';
+    this.name = "ValidationError";
   }
 }
 
 class AuthenticationError extends AppError {
-  constructor(message = 'Authentication failed') {
+  constructor(message = "Authentication failed") {
     super(message, 401);
-    this.name = 'AuthenticationError';
+    this.name = "AuthenticationError";
   }
 }
 
 class AuthorizationError extends AppError {
-  constructor(message = 'Access denied') {
+  constructor(message = "Access denied") {
     super(message, 403);
-    this.name = 'AuthorizationError';
+    this.name = "AuthorizationError";
   }
 }
 
 class NotFoundError extends AppError {
-  constructor(resource = 'Resource') {
+  constructor(resource = "Resource") {
     super(`${resource} not found`, 404);
-    this.name = 'NotFoundError';
+    this.name = "NotFoundError";
   }
 }
 
 class ConflictError extends AppError {
-  constructor(message = 'Resource conflict') {
+  constructor(message = "Resource conflict") {
     super(message, 409);
-    this.name = 'ConflictError';
+    this.name = "ConflictError";
   }
 }
 
 class DatabaseError extends AppError {
-  constructor(message = 'Database operation failed') {
+  constructor(message = "Database operation failed") {
     super(message, 500);
-    this.name = 'DatabaseError';
+    this.name = "DatabaseError";
     this.isOperational = false;
   }
 }
 
 class PaymentError extends AppError {
-  constructor(message = 'Payment processing failed') {
+  constructor(message = "Payment processing failed") {
     super(message, 400);
-    this.name = 'PaymentError';
+    this.name = "PaymentError";
   }
 }
 
 class FileUploadError extends AppError {
-  constructor(message = 'File upload failed') {
+  constructor(message = "File upload failed") {
     super(message, 400);
-    this.name = 'FileUploadError';
+    this.name = "FileUploadError";
   }
 }
 
@@ -86,39 +86,41 @@ const handleDuplicateFieldsDB = (err) => {
 };
 
 const handleValidationErrorDB = (err) => {
-  const errors = Object.values(err.errors).map(el => ({
+  const errors = Object.values(err.errors).map((el) => ({
     field: el.path,
-    message: el.message
+    message: el.message,
   }));
-  return new ValidationError('Invalid input data', errors);
+  return new ValidationError("Invalid input data", errors);
 };
 
-const handleJWTError = () => new AuthenticationError('Invalid token. Please log in again!');
+const handleJWTError = () =>
+  new AuthenticationError("Invalid token. Please log in again!");
 
-const handleJWTExpiredError = () => new AuthenticationError('Your token has expired! Please log in again.');
+const handleJWTExpiredError = () =>
+  new AuthenticationError("Your token has expired! Please log in again.");
 
 // Global Error Handler
 const globalErrorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
+  err.status = err.status || "error";
 
   // Log error for debugging
-  console.error('🔴 Error Details:', {
+  console.error("🔴 Error Details:", {
     message: err.message,
     stack: err.stack,
     statusCode: err.statusCode,
     path: req.path,
     method: req.method,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   // Development error response
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     return res.status(err.statusCode).json({
       status: err.status,
       error: err,
       message: err.message,
-      stack: err.stack
+      stack: err.stack,
     });
   }
 
@@ -127,14 +129,15 @@ const globalErrorHandler = (err, req, res, next) => {
     return res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
-      ...(err.errors && { errors: err.errors })
+      ...(err.errors && { errors: err.errors }),
     });
   }
 
   // Programming or other unknown error: don't leak error details
   return res.status(500).json({
-    status: 'error',
-    message: 'Something went wrong!'
+    status: "error",
+    message:
+      "An unexpected error occurred. Our team has been notified and is working to fix this issue.",
   });
 };
 
@@ -161,5 +164,5 @@ module.exports = {
   handleJWTError,
   handleJWTExpiredError,
   globalErrorHandler,
-  asyncHandler
-}; 
+  asyncHandler,
+};

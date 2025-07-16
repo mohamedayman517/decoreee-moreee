@@ -90,7 +90,11 @@ class CreateBookingController {
       });
     } catch (error) {
       console.error("Booking error:", error);
-      res.status(500).send("Error processing booking");
+      res.status(500).json({
+        success: false,
+        message:
+          "Unable to process your booking request. Please try again or contact support if the problem persists.",
+      });
     }
   }
 
@@ -127,7 +131,11 @@ class CreateBookingController {
       });
     } catch (error) {
       console.error("Error proceeding to payment:", error);
-      res.status(500).send("Error loading payment page");
+      res.status(500).json({
+        success: false,
+        message:
+          "Unable to load payment page. Please check your booking details and try again.",
+      });
     }
   }
 
