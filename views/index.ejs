@@ -489,56 +489,5 @@ footer .container {
     fetch("/logout", { method: "POST" }).then(() => (window.location.href = "/"));
   }
 </script>
-
-  <!-- Mobile Menu Script -->
-  <script src="/js/mobile-menu.js"></script>
-
-  <!-- Debug Script -->
-  <script>
-    console.log('Debug: Page loaded');
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('Debug: DOM loaded');
-      const menuBtn = document.querySelector('.menu-btn');
-      const navLinks = document.querySelector('.nav-links');
-
-      console.log('Debug: Elements found:', {
-        menuBtn: menuBtn,
-        navLinks: navLinks,
-        menuBtnDisplay: menuBtn ? window.getComputedStyle(menuBtn).display : 'not found',
-        menuBtnVisibility: menuBtn ? window.getComputedStyle(menuBtn).visibility : 'not found'
-      });
-
-      if (menuBtn && navLinks) {
-        menuBtn.addEventListener('click', function(e) {
-          console.log('Debug: Menu button clicked!');
-          e.preventDefault();
-          e.stopPropagation();
-
-          // Toggle menu
-          navLinks.classList.toggle('active');
-          document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
-
-          // Change icon
-          const icon = menuBtn.querySelector('i');
-          if (navLinks.classList.contains('active')) {
-            icon.className = 'fa-solid fa-times';
-            console.log('Debug: Menu opened');
-          } else {
-            icon.className = 'fa-solid fa-bars';
-            console.log('Debug: Menu closed');
-          }
-        });
-
-        // Ensure menu button is visible on mobile
-        if (window.innerWidth <= 992) {
-          menuBtn.style.display = 'flex';
-          menuBtn.style.visibility = 'visible';
-          menuBtn.style.opacity = '1';
-        }
-
-        console.log('Debug: Menu button and nav-links styled');
-      }
-    });
-  </script>
   </body>
 </html>
