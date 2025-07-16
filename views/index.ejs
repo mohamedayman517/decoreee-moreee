@@ -492,5 +492,42 @@ footer .container {
 
   <!-- Mobile Menu Script -->
   <script src="/js/mobile-menu.js"></script>
+
+  <!-- Debug Script -->
+  <script>
+    console.log('Debug: Page loaded');
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Debug: DOM loaded');
+      const menuBtn = document.querySelector('.menu-btn');
+      const navLinks = document.querySelector('.nav-links');
+
+      console.log('Debug: Elements found:', {
+        menuBtn: menuBtn,
+        navLinks: navLinks,
+        menuBtnDisplay: menuBtn ? window.getComputedStyle(menuBtn).display : 'not found',
+        menuBtnVisibility: menuBtn ? window.getComputedStyle(menuBtn).visibility : 'not found'
+      });
+
+      if (menuBtn) {
+        menuBtn.addEventListener('click', function(e) {
+          console.log('Debug: Menu button clicked!');
+          alert('Menu button works!');
+        });
+
+        // Force show menu button
+        menuBtn.style.display = 'flex';
+        menuBtn.style.visibility = 'visible';
+        menuBtn.style.opacity = '1';
+        menuBtn.style.zIndex = '9999';
+        menuBtn.style.position = 'relative';
+        menuBtn.style.background = 'red';
+        menuBtn.style.color = 'white';
+        menuBtn.style.padding = '15px';
+        menuBtn.style.border = '3px solid blue';
+
+        console.log('Debug: Menu button styled');
+      }
+    });
+  </script>
   </body>
 </html>
