@@ -28,7 +28,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5000000 },
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+    files: 2, // Maximum 2 files
+  },
   fileFilter: function (req, file, cb) {
     const filetypes = /jpeg|jpg|png/;
     const extname = filetypes.test(
@@ -38,7 +41,7 @@ const upload = multer({
     if (mimetype && extname) {
       return cb(null, true);
     } else {
-      cb("Error: Images Only!");
+      cb(new Error("Only JPEG, JPG, and PNG image files are allowed!"));
     }
   },
 });

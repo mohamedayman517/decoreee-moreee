@@ -27,16 +27,30 @@ router.post(
       if (err instanceof multer.MulterError) {
         // Multer error
         console.error("❌ Multer error:", err);
+        let errorMessage = "File upload error";
+
+        if (err.code === "LIMIT_FILE_SIZE") {
+          errorMessage = "File size too large. Maximum allowed size is 5MB.";
+        } else if (err.code === "LIMIT_FILE_COUNT") {
+          errorMessage = "Too many files. Maximum 2 files allowed.";
+        } else if (err.code === "LIMIT_UNEXPECTED_FILE") {
+          errorMessage = "Unexpected file field. Please check your form.";
+        } else {
+          errorMessage = `File upload error: ${err.message}`;
+        }
+
         return res.status(400).json({
           success: false,
-          message: `File upload error: ${err.message}`,
+          message: errorMessage,
         });
       } else if (err) {
-        // Unknown error
-        console.error("❌ Unknown error during file upload:", err);
-        return res.status(500).json({
+        // Custom file filter error or other errors
+        console.error("❌ File upload error:", err);
+        return res.status(400).json({
           success: false,
-          message: "An error occurred during file upload. Please try again.",
+          message:
+            err.message ||
+            "An error occurred during file upload. Please try again.",
         });
       }
 

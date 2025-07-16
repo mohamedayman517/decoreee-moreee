@@ -60,17 +60,23 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       const idCardPhoto =
         idCardPhotoInput.files.length > 0 ? idCardPhotoInput.files[0] : null;
-      
-      // التحقق من حجم الملفات (الحد الأقصى 5 ميجابايت)
+
+      // Check file sizes (maximum 5 MB)
       const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
-      
+
       if (profilePhoto && profilePhoto.size > MAX_FILE_SIZE) {
-        showMessage("❌ حجم صورة الملف الشخصي يتجاوز الحد المسموح به (5 ميجابايت)", "red");
+        showMessage(
+          "❌ Profile photo size exceeds the allowed limit (5 MB)",
+          "red"
+        );
         hasError = true;
       }
-      
+
       if (idCardPhoto && idCardPhoto.size > MAX_FILE_SIZE) {
-        showMessage("❌ حجم صورة بطاقة الهوية يتجاوز الحد المسموح به (5 ميجابايت)", "red");
+        showMessage(
+          "❌ ID card photo size exceeds the allowed limit (5 MB)",
+          "red"
+        );
         hasError = true;
       }
 
@@ -82,15 +88,15 @@ document.addEventListener("DOMContentLoaded", function () {
           hasError = true;
         }
 
-        // تحقق من بطاقة الهوية (إلزامية للمهندسين)
+        // Check ID card (required for engineers)
         if (!idCardPhoto) {
-          showMessage("❌ يجب تحميل صورة بطاقة الهوية للمهندسين.", "red");
+          showMessage("❌ ID card photo is required for engineers.", "red");
           hasError = true;
         }
 
-        // تحقق من الصورة الشخصية (اختياري)
+        // Check profile photo (optional)
         if (!profilePhoto) {
-          showMessage("❌ الرجاء تحميل صورة الملف الشخصي.", "red");
+          showMessage("❌ Please upload a profile photo.", "red");
           hasError = true;
         }
       }
@@ -208,9 +214,16 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = `/payment-policy?engineerId=${data.user._id}`;
           }, 2000);
         } else {
-          const errorText = await response.text();
-          console.error("Server Error:", errorText);
-          showMessage(errorText || "Failed to register.", "red");
+          try {
+            const errorData = await response.json();
+            console.error("Server Error:", errorData);
+            showMessage(errorData.message || "Failed to register.", "red");
+          } catch (parseError) {
+            // If response is not JSON, try to get text
+            const errorText = await response.text();
+            console.error("Server Error:", errorText);
+            showMessage("Registration failed. Please try again.", "red");
+          }
         }
       } catch (error) {
         showMessage(`Error: ${error.message}`, "red");
@@ -222,12 +235,46 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// ✅ وظيفة عرض الرسائل العامة
+// ✅ Enhanced message display function
 function showMessage(text, color) {
   const messageDiv = document.getElementById("message");
-  messageDiv.style.display = "block";
-  messageDiv.style.color = color;
-  messageDiv.textContent = text;
+  if (!messageDiv) {
+    // Create message div if it doesn't exist
+    const newMessageDiv = document.createElement("div");
+    newMessageDiv.id = "message";
+    newMessageDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      z-index: 9999;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-left: 4px solid;
+    `;
+    document.body.appendChild(newMessageDiv);
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      newMessageDiv.style.opacity = "0";
+      setTimeout(() => newMessageDiv.remove(), 300);
+    }, 5000);
+
+    newMessageDiv.style.display = "block";
+    newMessageDiv.style.color =
+      color === "red" ? "#721c24" : color === "green" ? "#0f5132" : color;
+    newMessageDiv.style.backgroundColor =
+      color === "red" ? "#f8d7da" : color === "green" ? "#d1e7dd" : "#fff3cd";
+    newMessageDiv.style.borderLeftColor =
+      color === "red" ? "#dc3545" : color === "green" ? "#198754" : "#ffc107";
+    newMessageDiv.textContent = text;
+  } else {
+    messageDiv.style.display = "block";
+    messageDiv.style.color = color;
+    messageDiv.textContent = text;
+  }
 }
 
 function previewProfilePhoto(event) {
