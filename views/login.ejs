@@ -418,6 +418,93 @@
       toggleIcon.classList.add("bi-eye");
     }
   }
+
+  // Mobile Menu Toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuBtn = document.querySelector('.menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    const body = document.body;
+
+    if (menuBtn && navLinks) {
+      // Toggle menu on button click
+      menuBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        navLinks.classList.toggle('active');
+        body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+
+        // Change icon
+        const icon = menuBtn.querySelector('i');
+        if (navLinks.classList.contains('active')) {
+          icon.className = 'fa-solid fa-times';
+        } else {
+          icon.className = 'fa-solid fa-bars';
+        }
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', function(e) {
+        if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+          navLinks.classList.remove('active');
+          body.style.overflow = '';
+          menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+        }
+      });
+
+      // Close menu when clicking on close area
+      navLinks.addEventListener('click', function(e) {
+        const rect = navLinks.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+
+        if (clickX > rect.width - 60 && clickY < 60) {
+          navLinks.classList.remove('active');
+          body.style.overflow = '';
+          menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+        }
+      });
+
+      // Handle navigation links
+      const navLinksItems = navLinks.querySelectorAll('a');
+      navLinksItems.forEach(link => {
+        link.addEventListener('click', function(e) {
+          if (this.getAttribute('href') === '#') {
+            e.preventDefault();
+            const dropdown = this.closest('.dropdown');
+            if (dropdown) {
+              dropdown.classList.toggle('active');
+            }
+            return;
+          }
+
+          if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+            navLinks.classList.remove('active');
+            body.style.overflow = '';
+            menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+          }
+        });
+      });
+
+      // Close menu on window resize
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 992) {
+          navLinks.classList.remove('active');
+          body.style.overflow = '';
+          menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+        }
+      });
+
+      // Handle escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+          navLinks.classList.remove('active');
+          body.style.overflow = '';
+          menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+        }
+      });
+    }
+  });
 </script>
 
   </body>

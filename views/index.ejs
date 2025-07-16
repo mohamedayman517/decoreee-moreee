@@ -488,74 +488,9 @@ footer .container {
     function logout() {
     fetch("/logout", { method: "POST" }).then(() => (window.location.href = "/"));
   }
-
-  // Mobile Menu Toggle
-  document.addEventListener('DOMContentLoaded', function() {
-    const menuBtn = document.querySelector('.menu-btn');
-    const navLinks = document.querySelector('.nav-links');
-    const body = document.body;
-
-    if (menuBtn && navLinks) {
-      // Toggle menu on button click
-      menuBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        navLinks.classList.toggle('active');
-        body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
-
-        // Change icon
-        const icon = menuBtn.querySelector('i');
-        if (navLinks.classList.contains('active')) {
-          icon.className = 'fa-solid fa-times';
-        } else {
-          icon.className = 'fa-solid fa-bars';
-        }
-      });
-
-      // Close menu when clicking on close button (::before pseudo element)
-      navLinks.addEventListener('click', function(e) {
-        if (e.target === navLinks) {
-          navLinks.classList.remove('active');
-          body.style.overflow = '';
-          menuBtn.querySelector('i').className = 'fa-solid fa-bars';
-        }
-      });
-
-      // Close menu when clicking on a link
-      const navLinksItems = navLinks.querySelectorAll('a');
-      navLinksItems.forEach(link => {
-        link.addEventListener('click', function() {
-          // Don't close for dropdown toggles
-          if (!this.getAttribute('href') || this.getAttribute('href') === '#') {
-            return;
-          }
-          navLinks.classList.remove('active');
-          body.style.overflow = '';
-          menuBtn.querySelector('i').className = 'fa-solid fa-bars';
-        });
-      });
-
-      // Handle dropdown toggles on mobile
-      const dropdowns = navLinks.querySelectorAll('.dropdown');
-      dropdowns.forEach(dropdown => {
-        const toggle = dropdown.querySelector('a[href="#"]');
-        if (toggle) {
-          toggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            dropdown.classList.toggle('active');
-          });
-        }
-      });
-
-      // Close menu on window resize
-      window.addEventListener('resize', function() {
-        if (window.innerWidth > 992) {
-          navLinks.classList.remove('active');
-          body.style.overflow = '';
-          menuBtn.querySelector('i').className = 'fa-solid fa-bars';
-        }
-      });
-    }
-  });
 </script>
+
+  <!-- Mobile Menu Script -->
+  <script src="/js/mobile-menu.js"></script>
   </body>
 </html>

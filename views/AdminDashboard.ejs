@@ -412,7 +412,9 @@
               <h3 class="mb-0">
                 <% let totalRating = 0, ratedEngineers = 0; %>
                 <% engineers.forEach(engineer => { %>
-                <% if (engineer.averageRating !== undefined && engineer.averageRating !== null) { totalRating += engineer.averageRating; ratedEngineers++; } %>
+                <% if (engineer.averageRating !== undefined &&
+                engineer.averageRating !== null) { totalRating +=
+                engineer.averageRating; ratedEngineers++; } %>
                 <% }); %>
                 <%= ratedEngineers > 0 ? (totalRating /
                 ratedEngineers).toFixed(1) : 'N/A' %>
@@ -421,52 +423,51 @@
           </div>
         </div>
         <div class="col-md-3 mb-3">
-  <div class="card stats-card"
-    style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); color: #ffd700; border: 2px solid #ffd700;">
-    <div class="card-body text-center">
-      <i class="fas fa-coins fa-2x mb-3"></i>
-      <h5 class="card-title">Total Revenue</h5>
-      <h3 class="mb-0"><%= totalRevenue %> EGP</h3>
-    </div>
-  </div>
-</div>
+          <div class="card stats-card"
+            style="background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); color: #ffd700; border: 2px solid #ffd700;">
+            <div class="card-body text-center">
+              <i class="fas fa-coins fa-2x mb-3"></i>
+              <h5 class="card-title">Total Revenue</h5>
+              <h3 class="mb-0"><%= totalRevenue %> EGP</h3>
+            </div>
+          </div>
+        </div>
 
       </div>
 
-<div class="table-container mt-4">
-  <h4>Commission from Bookings</h4>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Engineer</th>
-        <th>eventType</th>
-        <th>Package</th>
-        <th>Total Price</th>
-        <th>Deposit</th>
-        <th>Commission</th>
-        <th>Remaining</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% bookings.forEach(booking => { %>
-        <tr>
-          <td><%= booking.engineerName %></td>
-          <td><%= booking.projectType %></td>
-          <td><%= booking.packageName %></td>
-          <td><%= booking.totalPrice || booking.price %> EGP</td>
-          <td><%= booking.deposit %> EGP</td>
-          <td><%= booking.commission %> EGP</td>
-          <td><%= booking.remaining || (booking.totalPrice - booking.deposit) %> EGP</td>
-          <td><%= new Date(booking.bookingDate).toLocaleDateString('en-US') %></td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</div>
-
-
-
+      <div class="table-container mt-4">
+        <h4>Commission from Bookings</h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Engineer</th>
+              <th>eventType</th>
+              <th>Package</th>
+              <th>Total Price</th>
+              <th>Deposit</th>
+              <th>Commission</th>
+              <th>Remaining</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% bookings.forEach(booking => { %>
+            <tr>
+              <td><%= booking.engineerName %></td>
+              <td><%= booking.projectType %></td>
+              <td><%= booking.packageName %></td>
+              <td><%= booking.totalPrice || booking.price %> EGP</td>
+              <td><%= booking.deposit %> EGP</td>
+              <td><%= booking.commission %> EGP</td>
+              <td><%= booking.remaining || (booking.totalPrice -
+                booking.deposit) %> EGP</td>
+              <td><%= new Date(booking.bookingDate).toLocaleDateString('en-US')
+                %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
 
       <div class="search-bar position-relative">
         <input type="text" id="searchInput"
@@ -983,6 +984,76 @@
             clientCountElement.innerHTML = '<span title="Error loading client count">--</span>';
           }
         }
+      }
+
+      // Mobile Menu Toggle
+      const menuBtn = document.querySelector('.menu-btn');
+      const navLinks = document.querySelector('.nav-links');
+      const body = document.body;
+
+      if (menuBtn && navLinks) {
+          menuBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+
+              navLinks.classList.toggle('active');
+              body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+
+              const icon = menuBtn.querySelector('i');
+              if (navLinks.classList.contains('active')) {
+                  icon.className = 'fa-solid fa-times';
+              } else {
+                  icon.className = 'fa-solid fa-bars';
+              }
+          });
+
+          document.addEventListener('click', function(e) {
+              if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+                  navLinks.classList.remove('active');
+                  body.style.overflow = '';
+                  menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+              }
+          });
+
+          navLinks.addEventListener('click', function(e) {
+              const rect = navLinks.getBoundingClientRect();
+              const clickX = e.clientX - rect.left;
+              const clickY = e.clientY - rect.top;
+
+              if (clickX > rect.width - 60 && clickY < 60) {
+                  navLinks.classList.remove('active');
+                  body.style.overflow = '';
+                  menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+              }
+          });
+
+          const navLinksItems = navLinks.querySelectorAll('a');
+          navLinksItems.forEach(link => {
+              link.addEventListener('click', function(e) {
+                  if (this.getAttribute('href') === '#') {
+                      e.preventDefault();
+                      const dropdown = this.closest('.dropdown');
+                      if (dropdown) {
+                          dropdown.classList.toggle('active');
+                      }
+                      return;
+                  }
+
+                  if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                      navLinks.classList.remove('active');
+                      body.style.overflow = '';
+                      menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+                  }
+              });
+          });
+
+          window.addEventListener('resize', function() {
+              if (window.innerWidth > 992) {
+                  navLinks.classList.remove('active');
+                  body.style.overflow = '';
+                  menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+              }
+          });
       }
     </script>
 

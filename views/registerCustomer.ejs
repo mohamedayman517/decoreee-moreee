@@ -537,5 +537,79 @@ document.querySelector('.password-toggle').addEventListener('click', function() 
     <!-- Ensure intl-tel-input utils.js is loaded for formatting and validation -->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
+
+    <script>
+      // Mobile Menu Toggle
+      document.addEventListener('DOMContentLoaded', function() {
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        const body = document.body;
+
+        if (menuBtn && navLinks) {
+            menuBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                navLinks.classList.toggle('active');
+                body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+
+                const icon = menuBtn.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.className = 'fa-solid fa-times';
+                } else {
+                    icon.className = 'fa-solid fa-bars';
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+                    navLinks.classList.remove('active');
+                    body.style.overflow = '';
+                    menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+                }
+            });
+
+            navLinks.addEventListener('click', function(e) {
+                const rect = navLinks.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+
+                if (clickX > rect.width - 60 && clickY < 60) {
+                    navLinks.classList.remove('active');
+                    body.style.overflow = '';
+                    menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+                }
+            });
+
+            const navLinksItems = navLinks.querySelectorAll('a');
+            navLinksItems.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                        const dropdown = this.closest('.dropdown');
+                        if (dropdown) {
+                            dropdown.classList.toggle('active');
+                        }
+                        return;
+                    }
+
+                    if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                        navLinks.classList.remove('active');
+                        body.style.overflow = '';
+                        menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+                    }
+                });
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 992) {
+                    navLinks.classList.remove('active');
+                    body.style.overflow = '';
+                    menuBtn.querySelector('i').className = 'fa-solid fa-bars';
+                }
+            });
+        }
+      });
+    </script>
   </body>
 </html>

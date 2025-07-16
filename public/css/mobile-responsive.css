@@ -30,6 +30,21 @@
   /* Navigation Fixes */
   .navv-bar {
     position: relative !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  /* Override any conflicting styles */
+  .d-lg-none {
+    display: block !important;
+  }
+
+  @media (min-width: 993px) {
+    .d-lg-none {
+      display: none !important;
+    }
   }
 
   .menu-btn {
@@ -38,9 +53,36 @@
     cursor: pointer !important;
     color: #fd226a !important;
     z-index: 1001 !important;
-    padding: 10px !important;
-    background: none !important;
-    border: none !important;
+    padding: 15px !important;
+    background: rgba(253, 34, 106, 0.1) !important;
+    border: 2px solid #fd226a !important;
+    border-radius: 8px !important;
+    position: relative !important;
+    transition: all 0.3s ease !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .menu-btn:hover {
+    color: white !important;
+    background: #fd226a !important;
+    transform: scale(1.05) !important;
+  }
+
+  .menu-btn:active {
+    transform: scale(0.95) !important;
+  }
+
+  /* Force visibility on mobile */
+  @media (max-width: 992px) {
+    .menu-btn {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
   }
 
   .nav-links {
@@ -176,6 +218,19 @@
     color: #fd226a !important;
     cursor: pointer !important;
     z-index: 1002 !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    background: rgba(253, 34, 106, 0.1) !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .nav-links::before:hover {
+    background: rgba(253, 34, 106, 0.2) !important;
+    transform: scale(1.1) !important;
   }
 
   /* Logo adjustments */
