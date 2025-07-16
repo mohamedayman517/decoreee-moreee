@@ -47,11 +47,17 @@
     }
   }
 
-  /* Debug styles - remove after testing */
+  /* Clean menu button styling */
   .menu-btn {
-    background: rgba(253, 34, 106, 0.2) !important;
+    background: rgba(253, 34, 106, 0.1) !important;
     border: 2px solid #fd226a !important;
-    outline: 2px solid red !important; /* Temporary for debugging */
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .menu-btn:hover {
+    background: #fd226a !important;
+    color: white !important;
   }
 
   .menu-btn {
@@ -111,6 +117,7 @@
     z-index: 1000 !important;
     padding: 80px 20px 20px 20px !important;
     overflow-y: auto !important;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1) !important;
   }
 
   .nav-links.active {
@@ -120,17 +127,18 @@
     align-items: center !important;
     visibility: visible !important;
     opacity: 1 !important;
+    animation: slideInRight 0.3s ease !important;
   }
 
-  /* Debug styles for nav-links */
-  .nav-links.active {
-    background: rgba(
-      255,
-      0,
-      0,
-      0.8
-    ) !important; /* Red background for debugging */
-    border: 5px solid blue !important;
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
 
   .nav-links ul {
@@ -152,16 +160,18 @@
     display: block !important;
     text-align: center !important;
     border-radius: 10px !important;
-    background: rgba(253, 34, 106, 0.1) !important;
+    background: rgba(253, 34, 106, 0.05) !important;
     color: #333 !important;
     text-decoration: none !important;
     transition: all 0.3s ease !important;
+    border: 1px solid rgba(253, 34, 106, 0.2) !important;
   }
 
   .nav-links li a:hover {
     background: #fd226a !important;
     color: white !important;
     transform: translateY(-2px) !important;
+    box-shadow: 0 4px 15px rgba(253, 34, 106, 0.3) !important;
   }
 
   /* Dropdown fixes for mobile */
@@ -655,25 +665,46 @@
     background: rgba(0, 0, 0, 0.98) !important;
     -webkit-backdrop-filter: blur(15px) !important;
     backdrop-filter: blur(15px) !important;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.1) !important;
   }
 
   body.dark-mode .nav-links li a {
-    background: rgba(253, 34, 106, 0.2) !important;
-    color: #fff !important;
+    background: rgba(255, 215, 0, 0.1) !important;
+    color: #ffd700 !important;
+    border: 1px solid rgba(255, 215, 0, 0.3) !important;
   }
 
   body.dark-mode .nav-links li a:hover {
-    background: #fd226a !important;
-    color: white !important;
+    background: #ffd700 !important;
+    color: #000 !important;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
   }
 
   body.dark-mode .dropdown-menu {
-    background: rgba(253, 34, 106, 0.1) !important;
+    background: rgba(255, 215, 0, 0.05) !important;
+    border: 1px solid rgba(255, 215, 0, 0.2) !important;
   }
 
   body.dark-mode .dropdown-menu a {
-    background: rgba(253, 34, 106, 0.2) !important;
-    color: #fff !important;
+    background: rgba(255, 215, 0, 0.1) !important;
+    color: #ffd700 !important;
+    border: 1px solid rgba(255, 215, 0, 0.2) !important;
+  }
+
+  body.dark-mode .dropdown-menu a:hover {
+    background: #ffd700 !important;
+    color: #000 !important;
+  }
+
+  body.dark-mode .menu-btn {
+    color: #ffd700 !important;
+    border-color: #ffd700 !important;
+    background: rgba(255, 215, 0, 0.1) !important;
+  }
+
+  body.dark-mode .menu-btn:hover {
+    background: #ffd700 !important;
+    color: #000 !important;
   }
 
   body.dark-mode .card {

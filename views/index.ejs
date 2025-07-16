@@ -529,24 +529,12 @@ footer .container {
           }
         });
 
-        // Force show menu button
-        menuBtn.style.display = 'flex';
-        menuBtn.style.visibility = 'visible';
-        menuBtn.style.opacity = '1';
-        menuBtn.style.zIndex = '9999';
-        menuBtn.style.position = 'relative';
-        menuBtn.style.background = 'red';
-        menuBtn.style.color = 'white';
-        menuBtn.style.padding = '15px';
-        menuBtn.style.border = '3px solid blue';
-
-        // Force show nav-links when active
-        navLinks.style.position = 'fixed';
-        navLinks.style.top = '0';
-        navLinks.style.right = '0';
-        navLinks.style.width = '100%';
-        navLinks.style.height = '100vh';
-        navLinks.style.zIndex = '1000';
+        // Ensure menu button is visible on mobile
+        if (window.innerWidth <= 992) {
+          menuBtn.style.display = 'flex';
+          menuBtn.style.visibility = 'visible';
+          menuBtn.style.opacity = '1';
+        }
 
         console.log('Debug: Menu button and nav-links styled');
       }
