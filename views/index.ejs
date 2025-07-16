@@ -508,10 +508,25 @@ footer .container {
         menuBtnVisibility: menuBtn ? window.getComputedStyle(menuBtn).visibility : 'not found'
       });
 
-      if (menuBtn) {
+      if (menuBtn && navLinks) {
         menuBtn.addEventListener('click', function(e) {
           console.log('Debug: Menu button clicked!');
-          alert('Menu button works!');
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Toggle menu
+          navLinks.classList.toggle('active');
+          document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+
+          // Change icon
+          const icon = menuBtn.querySelector('i');
+          if (navLinks.classList.contains('active')) {
+            icon.className = 'fa-solid fa-times';
+            console.log('Debug: Menu opened');
+          } else {
+            icon.className = 'fa-solid fa-bars';
+            console.log('Debug: Menu closed');
+          }
         });
 
         // Force show menu button
@@ -525,7 +540,15 @@ footer .container {
         menuBtn.style.padding = '15px';
         menuBtn.style.border = '3px solid blue';
 
-        console.log('Debug: Menu button styled');
+        // Force show nav-links when active
+        navLinks.style.position = 'fixed';
+        navLinks.style.top = '0';
+        navLinks.style.right = '0';
+        navLinks.style.width = '100%';
+        navLinks.style.height = '100vh';
+        navLinks.style.zIndex = '1000';
+
+        console.log('Debug: Menu button and nav-links styled');
       }
     });
   </script>
