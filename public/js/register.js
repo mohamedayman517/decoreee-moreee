@@ -217,12 +217,59 @@ document.addEventListener("DOMContentLoaded", function () {
           try {
             const errorData = await response.json();
             console.error("Server Error:", errorData);
-            showMessage(errorData.message || "Failed to register.", "red");
+
+            // Show specific error message or provide helpful feedback
+            let errorMessage = "Registration failed. Please try again.";
+
+            if (errorData.message) {
+              errorMessage = errorData.message;
+            } else if (response.status === 400) {
+              errorMessage = "Please check your information and try again.";
+            } else if (response.status === 409) {
+              errorMessage =
+                "This email is already registered. Please use a different email or login.";
+            } else if (response.status >= 500) {
+              errorMessage = "Server error. Please try again in a few minutes.";
+            }
+
+            showMessage(errorMessage, "red");
           } catch (parseError) {
             // If response is not JSON, try to get text
-            const errorText = await response.text();
-            console.error("Server Error:", errorText);
-            showMessage("Registration failed. Please try again.", "red");
+            try {
+              const errorText = await response.text();
+              console.error("Server Error:", errorText);
+
+              // Try to extract meaningful error from text
+              if (errorText.includes("email")) {
+                showMessage(
+                  "Email validation failed. Please check your email address.",
+                  "red"
+                );
+              } else if (errorText.includes("password")) {
+                showMessage(
+                  "Password validation failed. Please check password requirements.",
+                  "red"
+                );
+              } else if (
+                errorText.includes("file") ||
+                errorText.includes("upload")
+              ) {
+                showMessage(
+                  "File upload failed. Please check your images and try again.",
+                  "red"
+                );
+              } else {
+                showMessage(
+                  "Registration failed. Please check your information and try again.",
+                  "red"
+                );
+              }
+            } catch (textError) {
+              showMessage(
+                "Registration failed due to a network error. Please try again.",
+                "red"
+              );
+            }
           }
         }
       } catch (error) {

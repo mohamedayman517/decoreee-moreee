@@ -211,6 +211,7 @@ app.use(
         "https://*.up.railway.app",
         "https://api.stripe.com",
         "https://*.stripe.com",
+        "https://ipapi.co",
         process.env.BASE_URL,
         ...(process.env.NODE_ENV === "development"
           ? ["http://localhost:35729"]

@@ -95,7 +95,53 @@ class RegisterController {
       });
     } catch (error) {
       console.error("Registration error:", error);
-      res.status(500).json({ message: "Error during registration" });
+
+      // Provide specific error messages based on error type
+      let errorMessage = "Registration failed. Please try again.";
+      let statusCode = 500;
+
+      if (error.name === "ValidationError") {
+        statusCode = 400;
+        const validationErrors = Object.values(error.errors).map(
+          (err) => err.message
+        );
+        errorMessage = `Validation failed: ${validationErrors.join(", ")}`;
+      } else if (error.code === 11000) {
+        // MongoDB duplicate key error
+        statusCode = 409;
+        if (error.keyPattern.email) {
+          errorMessage =
+            "This email is already registered. Please use a different email or login.";
+        } else {
+          errorMessage =
+            "This information is already registered. Please check your details.";
+        }
+      } else if (error.message.includes("email")) {
+        statusCode = 400;
+        errorMessage =
+          "Invalid email address. Please check your email and try again.";
+      } else if (error.message.includes("password")) {
+        statusCode = 400;
+        errorMessage =
+          "Password validation failed. Please ensure your password meets the requirements.";
+      } else if (
+        error.message.includes("file") ||
+        error.message.includes("upload")
+      ) {
+        statusCode = 400;
+        errorMessage =
+          "File upload failed. Please check your images and try again.";
+      } else if (error.message.includes("phone")) {
+        statusCode = 400;
+        errorMessage =
+          "Invalid phone number. Please check your phone number format.";
+      }
+
+      res.status(statusCode).json({
+        success: false,
+        message: errorMessage,
+        ...(process.env.NODE_ENV === "development" && { error: error.message }),
+      });
     }
   }
 
